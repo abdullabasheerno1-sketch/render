@@ -1,11 +1,11 @@
 from flask import Flask, Response, request
-import requests
+import urllib.request
 
 app = Flask(__name__)
 
 USERNAME = 'MAGNL39E26'
 PASSWORD = 'hvhS6xsuZP'
-SERVER_URL = 'http://raztv.online'
+SERVER_URL = 'http://raztv.online:80/'
 
 @app.route('/')
 def proxy():
@@ -16,11 +16,15 @@ def proxy():
     else:
         target_url = f"{SERVER_URL}/get.php?username={USERNAME}&password={PASSWORD}&type=m3u_plus"
         
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-    
     try:
-        resp = requests.get(target_url, headers=headers, stream=True)
-        return Response(resp.raw.read(), status=resp.status_code, headers=dict(resp.headers))
+        req = urllib.request.Request(
+            target_url, 
+            headers={'User-Agent': 'VLC/3.0.18 LibVLC/3.0.18'}
+        )
+        with urllib.request.urlopen(req) as resp:
+            content = resp.read()
+            headers = dict(resp.headers.items())
+            return Response(content, status=resp.status, headers=headers)
     except Exception as e:
         return {"error": str(e)}, 500
 
