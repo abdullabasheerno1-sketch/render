@@ -1,11 +1,10 @@
-from flask import Flask, Response, request
-import requests
+from flask import Flask, redirect, request
 
 app = Flask(__name__)
 
 USERNAME = 'MAGNL39E26'
 PASSWORD = 'hvhS6xsuZP'
-SERVER_URL = 'http://raztv.online'
+SERVER_URL = 'http://raztv.online:80/'
 
 @app.route('/')
 def proxy():
@@ -16,16 +15,7 @@ def proxy():
     else:
         target_url = f"{SERVER_URL}/get.php?username={USERNAME}&password={PASSWORD}&type=m3u_plus"
         
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
-        'Accept': '*/*'
-    }
-    
-    try:
-        resp = requests.get(target_url, headers=headers, stream=True)
-        return Response(resp.raw.read(), status=resp.status_code, headers=dict(resp.headers))
-    except Exception as e:
-        return {"error": str(e)}, 500
+    return redirect(target_url, code=302)
 
 if __name__ == '__main__':
     app.run()
