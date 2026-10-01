@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 USERNAME = 'MAGNL39E26'
 PASSWORD = 'hvhS6xsuZP'
-SERVER_URL = 'http://raztv.online'
+SERVER_URL = 'http://raztv.online:80/'
 
 @app.route('/')
 def proxy():
